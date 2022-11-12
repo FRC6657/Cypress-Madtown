@@ -99,6 +99,17 @@ public class RobotContainer {
 
     SmartDashboard.putData(mField);
 
+    //  double throttle = mDriverController.getThrottle(); 
+    //  throttle = 0;
+    //  double invertAxis;
+    //  invertAxis = 1;
+
+    //  if (throttle == 100) {
+    //     invertAxis = -1;
+    //  } else if (throttle == 0) {
+    //     invertAxis = 1;
+    //  }
+
       drivetrain.setDefaultCommand(
         drivetrain.new TeleOpCommand(
           () -> ArborMath.signumPow(Deadbander.applyLinearScaledDeadband(mDriverController.getRawAxis(1), 0.075), 1.2),
@@ -114,7 +125,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     //Automated Pistons and Intake 
-    m12.whenHeld(
+    m7.whenHeld(
         new StartEndCommand(
           pistons::extend, 
           pistons::retract,
@@ -123,7 +134,7 @@ public class RobotContainer {
     );
 
     //Lift up
-    m11.whenHeld(
+    m9.whenHeld(
       new ParallelCommandGroup(
         new InstantCommand(hood::stop, hood),
         new StartEndCommand(
@@ -134,7 +145,7 @@ public class RobotContainer {
     );
 
     //Lift down
-    m9.whenHeld(
+    m11.whenHeld(
       new ParallelCommandGroup(
         new InstantCommand(hood::stop, hood),
         new StartEndCommand(
@@ -145,7 +156,7 @@ public class RobotContainer {
       )
     );
 
-    mJoystickHatUp.whenHeld(
+    mJoystickHatDown.whenHeld(
       new ParallelCommandGroup(
         new StartEndCommand(
           intake::start,
@@ -160,7 +171,7 @@ public class RobotContainer {
       ) 
     );
 
-    mJoystickHatDown.whenHeld(
+    mJoystickHatUp.whenHeld(
       new ParallelCommandGroup(
         new StartEndCommand(
           intake::reverse,
@@ -243,7 +254,7 @@ public class RobotContainer {
         new SequentialCommandGroup(
             new ParallelCommandGroup(
                 new InstantCommand(() -> flywheel.setTargetRPM(1250), flywheel),
-                new InstantCommand(() -> hood.setTargetAngle(15), hood)),
+                new InstantCommand(() -> hood.setTargetAngle(12), hood)),
             new WaitUntilCommand(() -> flywheel.ready()),
             new InstantCommand(pistons::extend, pistons),
             new RunCommand(accelerator::start, accelerator).withInterrupt(() -> flywheel.shotDetector()),
@@ -261,13 +272,13 @@ public class RobotContainer {
             )
         );
 
-    m7.whenHeld(
-          new StartEndCommand(
-        () -> hood.setTargetAngle(InterpolatingTable.get(vision.visionSupplier.getPitch()).hoodAngle), hood::stop, hood
-      ).beforeStarting(
-        new PrintCommand(Double.toString(vision.visionSupplier.getPitch()))
-      )
-    );
+    // m10.whenHeld(
+    //       new StartEndCommand(
+    //     () -> hood.setTargetAngle(InterpolatingTable.get(vision.visionSupplier.getPitch()).hoodAngle), hood::stop, hood
+    //   ).beforeStarting(
+    //     new PrintCommand(Double.toString(vision.visionSupplier.getPitch()))
+    //   )
+    // );
 
     //All driver controls
 

@@ -319,6 +319,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
       this.xInput = xInput;
       this.zInput = zInput;
       this.modSpeed = modSpeed;
+
       addRequirements(DrivetrainSubsystem.this);
     }
 

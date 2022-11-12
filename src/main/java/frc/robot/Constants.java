@@ -46,6 +46,7 @@ public final class Constants {
         public static final double kDriveForwardDecel = 0.25 * 5; //Meters/s^2
         public static final double kDriveBackwardDecel = 0.25 * 5; //Meters/s^2
         public static final double kTurnAccel = 0.25 * Units.degreesToRadians(360*3); //Rad/s^2
+        public static final double kInvertAxis = -1;
     }
 
     public static class CAN{

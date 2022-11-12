@@ -83,7 +83,7 @@ public class RobotContainer {
   JoystickButton m10 = new JoystickButton(mDriverController, 10);
   JoystickButton m11 = new JoystickButton(mDriverController, 11);
   JoystickButton m12 = new JoystickButton(mDriverController, 12);
-
+  
   POVButton mJoystickHatRight = new POVButton(mDriverController, 90);
   POVButton mJoystickHatUp = new POVButton(mDriverController, 0);
   POVButton mJoystickHatLeft = new POVButton(mDriverController, 270);
@@ -102,7 +102,7 @@ public class RobotContainer {
       drivetrain.setDefaultCommand(
         drivetrain.new TeleOpCommand(
           () -> ArborMath.signumPow(Deadbander.applyLinearScaledDeadband(mDriverController.getRawAxis(1), 0.075), 1.2),
-          () -> ArborMath.signumPow(Deadbander.applyLinearScaledDeadband(mDriverController.getRawAxis(2), 0.075), 1.2),
+          () -> ArborMath.signumPow(-Deadbander.applyLinearScaledDeadband(mDriverController.getRawAxis(2), 0.075), 1.2),
           () -> mDriverController.getTrigger()
         )
       );
@@ -175,7 +175,7 @@ public class RobotContainer {
       ) 
     );
 
-    mJoystickHatLeft.whenHeld(
+    mJoystickHatRight.whenHeld(
       new StartEndCommand(
         accelerator::start,
         accelerator::stop,
@@ -183,7 +183,7 @@ public class RobotContainer {
       )
     );
 
-    mJoystickHatRight.whenHeld(
+    mJoystickHatLeft.whenHeld(
       new StartEndCommand(
         accelerator::reverse,
         accelerator::stop,

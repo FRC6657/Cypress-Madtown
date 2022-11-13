@@ -4,9 +4,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
@@ -25,18 +23,19 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autonomous.common.FireOne;
-import frc.robot.autonomous.routines.BlueAllience.BlueFenderFive;
-import frc.robot.autonomous.routines.BlueAllience.BlueFenderThree;
-import frc.robot.autonomous.routines.BlueAllience.BlueFenderTwoHanger;
-import frc.robot.autonomous.routines.BlueAllience.BlueFenderTwoMid;
-import frc.robot.autonomous.routines.BlueAllience.BlueFenderTwoWall;
-import frc.robot.autonomous.routines.BlueAllience.Taxi;
-import frc.robot.autonomous.routines.RedAlliance.RedFenderFive;
-import frc.robot.autonomous.routines.RedAlliance.RedFenderThree;
-import frc.robot.autonomous.routines.RedAlliance.RedFenderTwoHanger;
-import frc.robot.autonomous.routines.RedAlliance.RedFenderTwoMid;
-import frc.robot.autonomous.routines.RedAlliance.RedFenderTwoWall;
-import frc.robot.autonomous.routines.RedAlliance.RedTwoHanger;
+// import frc.robot.autonomous.routines.BlueAllience.BlueFenderFive;
+// import frc.robot.autonomous.routines.BlueAllience.BlueFenderThree;
+// import frc.robot.autonomous.routines.BlueAllience.BlueFenderTwoHanger;
+// import frc.robot.autonomous.routines.BlueAllience.BlueFenderTwoMid;
+// import frc.robot.autonomous.routines.BlueAllience.BlueFenderTwoWall;
+import frc.robot.autonomous.routines.BlueAllience.BlueTaxiShoot;
+// import frc.robot.autonomous.routines.BlueAllience.Taxi;
+// import frc.robot.autonomous.routines.RedAlliance.RedFenderFive;
+// import frc.robot.autonomous.routines.RedAlliance.RedFenderThree;
+// import frc.robot.autonomous.routines.RedAlliance.RedFenderTwoHanger;
+// import frc.robot.autonomous.routines.RedAlliance.RedFenderTwoMid;
+// import frc.robot.autonomous.routines.RedAlliance.RedFenderTwoWall;
+// import frc.robot.autonomous.routines.RedAlliance.RedTwoHanger;
 import frc.robot.custom.ArborMath;
 
 import frc.robot.custom.controls.Deadbander;
@@ -48,7 +47,7 @@ import frc.robot.subsystems.intake.IntakePistonsSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.FlywheelSubsystem;
 import frc.robot.subsystems.shooter.HoodSubsystem;
-import frc.robot.subsystems.shooter.Interpolation.InterpolatingTable;
+// import frc.robot.subsystems.shooter.Interpolation.InterpolatingTable;
 
 public class RobotContainer {
 
@@ -63,7 +62,7 @@ public class RobotContainer {
 
   private Trigger intakeExtended = new Trigger(pistons::extended);
 
-  private SendableChooser<SequentialCommandGroup[]> mAutoChooser = new SendableChooser<>();
+  //private SendableChooser<SequentialCommandGroup[]> mAutoChooser = new SendableChooser<>();
 
   private static Field2d mField = new Field2d();
   private FieldObject2d mIntakeVisualizer = mField.getObject("Intake");
@@ -95,7 +94,7 @@ public class RobotContainer {
     LiveWindow.disableAllTelemetry();
 
     configureButtonBindings();
-    configureAutoChooser();
+    //configureAutoChooser();
 
     SmartDashboard.putData(mField);
 
@@ -125,7 +124,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     //Automated Pistons and Intake 
-    m7.whenHeld(
+    m8.whenHeld(
         new StartEndCommand(
           pistons::extend, 
           pistons::retract,
@@ -202,37 +201,34 @@ public class RobotContainer {
       )
     );
     
-    //Fender Shot
+    //Fender Shot bR
     mBottomRight.whenHeld(
       new SequentialCommandGroup(
-          new ParallelCommandGroup(
-            new InstantCommand(() -> flywheel.setTargetRPM(3150), flywheel),
-            new InstantCommand(() -> hood.setTargetAngle(3), hood)
-          ),
-          new WaitUntilCommand(() -> flywheel.ready()),
-          new InstantCommand(pistons::extend, pistons),
-          new RunCommand(accelerator::start, accelerator).withInterrupt(() -> flywheel.shotDetector()),
-          new ParallelCommandGroup(
-            new InstantCommand(accelerator::reverse),
-            new InstantCommand(pistons::retract)
-          ),
-          new WaitCommand(0.25),
-          new InstantCommand(accelerator::stop),
-          new WaitUntilCommand(() -> flywheel.ready()),
-          new RunCommand(accelerator::start)
-      )
-    ).whenReleased(
-      new ParallelCommandGroup(
-        new InstantCommand(flywheel::stop, flywheel),
-        new InstantCommand(hood::stop, hood),
-        new InstantCommand(accelerator::stop, accelerator),
-        new InstantCommand(pistons::retract, pistons)
-      )
+            new ParallelCommandGroup(
+                new InstantCommand(() -> flywheel.easyShoot(8.6)),
+                new InstantCommand(() -> hood.setTargetAngle(2), hood)),
+            new WaitCommand(2.5),
+            new InstantCommand(accelerator::start, accelerator),
+            new WaitCommand(1),
+            new InstantCommand(() -> accelerator.set(-1)),
+            new WaitCommand(0.25),
+            new InstantCommand(accelerator::stop),
+            new InstantCommand(accelerator::start),
+            new InstantCommand(accelerator::stop),
+            new WaitCommand(1),
+            new InstantCommand(accelerator::start),
+            new InstantCommand(pistons::extend))
+        ).whenReleased(
+            new ParallelCommandGroup(
+                new InstantCommand(pistons::retract),
+                new InstantCommand(flywheel::stop, flywheel),
+                new InstantCommand(hood::stop, hood),
+                new InstantCommand(accelerator::stop, accelerator)
+
+            )
     );
 
 
-
-    //After Aimbot
     mTopLeft.whenHeld(
       new FireOne(flywheel, hood, accelerator, pistons, 1000, 1)
     ).whenReleased(
@@ -283,7 +279,7 @@ public class RobotContainer {
     //All driver controls
 
     //Aimbot
-    m8.whenHeld(
+    m7.whenHeld(
       drivetrain.new VisionAimAssist()
         .beforeStarting(
           new SequentialCommandGroup(
@@ -306,76 +302,107 @@ public class RobotContainer {
   );
 
     // Tarmac Shot (6)
+    // mTopRight.whenHeld(
+    //     new SequentialCommandGroup(
+    //         new ParallelCommandGroup(
+    //             new InstantCommand(() -> flywheel.setTargetRPM(3150), flywheel),
+    //             //4 volts
+    //             new InstantCommand(() -> hood.setTargetAngle(4), hood)),
+    //         new WaitUntilCommand(() -> flywheel.ready()),
+    //         new RunCommand(accelerator::start, accelerator).withInterrupt(() -> flywheel.shotDetector()),
+    //         new InstantCommand(() -> accelerator.set(-1)),
+    //         new WaitCommand(0.25),
+    //         new InstantCommand(accelerator::stop),
+    //         new WaitUntilCommand(() -> flywheel.ready()),
+    //         new RunCommand(accelerator::start)))
+    //     .whenReleased(
+    //         new ParallelCommandGroup(
+    //             new InstantCommand(flywheel::stop, flywheel),
+    //             new InstantCommand(hood::stop, hood),
+    //             new InstantCommand(accelerator::stop, accelerator)
+
+    //         )
+    //     );
+
     mTopRight.whenHeld(
-        new SequentialCommandGroup(
+      new SequentialCommandGroup(
             new ParallelCommandGroup(
-                new InstantCommand(() -> flywheel.setTargetRPM(InterpolatingTable.get(vision.visionSupplier.getPitch()).rpm), flywheel),
-                new InstantCommand(() -> hood.setTargetAngle(InterpolatingTable.get(vision.visionSupplier.getPitch()).hoodAngle), hood)),
-            new WaitUntilCommand(() -> flywheel.ready()),
-            new InstantCommand(pistons::extend, pistons),
-            new InstantCommand(intake::start),
-            new RunCommand(accelerator::start, accelerator).withInterrupt(() -> flywheel.shotDetector()),
+                new InstantCommand(() -> flywheel.easyShoot(8.2)),
+                //4 volts
+                new InstantCommand(() -> hood.setTargetAngle(2), hood)),
+            new WaitCommand(2.5),
+            new InstantCommand(accelerator::start, accelerator),
+            new WaitCommand(1),
             new InstantCommand(() -> accelerator.set(-1)),
             new WaitCommand(0.25),
             new InstantCommand(accelerator::stop),
-            new WaitUntilCommand(() -> flywheel.ready()),
-            new RunCommand(accelerator::start)))
-        .whenReleased(
+            //new WaitUntilCommand(() -> flywheel.ready()),
+            new InstantCommand(accelerator::start),
+            new InstantCommand(accelerator::stop),
+            new WaitCommand(1),
+            new InstantCommand(accelerator::start),
+            new InstantCommand(pistons::extend))
+        ).whenReleased(
             new ParallelCommandGroup(
+                new InstantCommand(pistons::retract),
                 new InstantCommand(flywheel::stop, flywheel),
                 new InstantCommand(hood::stop, hood),
-                new InstantCommand(accelerator::stop, accelerator),
-                new InstantCommand(pistons::retract, pistons),
-                new InstantCommand(intake::stop, intake)
-            )
-        );
+                new InstantCommand(accelerator::stop, accelerator)
 
-    // Fixed Hood Angle on m8
+            )
+  
+    );
+
+    
 
   }
   
-  public void configureAutoChooser(){
+  // public void configureAutoChooser(){
     
-    mAutoChooser.setDefaultOption("Nothing", new SequentialCommandGroup[]{null,null});
+  //   mAutoChooser.setDefaultOption("Nothing", new SequentialCommandGroup[]{null,null});
 
-    mAutoChooser.addOption("FenderFive", new SequentialCommandGroup[]{
-      new RedFenderFive(drivetrain, intake, pistons, accelerator, flywheel, hood),
-      new BlueFenderFive(drivetrain, intake, pistons, accelerator, flywheel, hood)
-    });
+  //   mAutoChooser.addOption("Taxi Shoot", new SequentialCommandGroup[]{
+  //     new BlueTaxiShoot(drivetrain, intake, pistons, flywheel, hood, accelerator)
+  //   });
 
-    mAutoChooser.addOption("FenderThree", new SequentialCommandGroup[]{
-      new RedFenderThree(drivetrain, intake, pistons, flywheel, hood, accelerator),
-      new BlueFenderThree(drivetrain, intake, pistons, accelerator, flywheel, hood)
-    });
+  //   mAutoChooser.addOption("FenderFive", new SequentialCommandGroup[]{
+  //     new RedFenderFive(drivetrain, intake, pistons, accelerator, flywheel, hood),
+  //     new BlueFenderFive(drivetrain, intake, pistons, accelerator, flywheel, hood)
+  //   });
 
-    mAutoChooser.addOption("FenderTwoHanger", new SequentialCommandGroup[]{
-      new RedFenderTwoHanger(drivetrain, intake, pistons, flywheel, hood, accelerator),
-      new BlueFenderTwoHanger(drivetrain, intake, pistons, flywheel, hood, accelerator)
-    });
+  //   mAutoChooser.addOption("FenderThree", new SequentialCommandGroup[]{
+  //     new RedFenderThree(drivetrain, intake, pistons, flywheel, hood, accelerator),
+  //     new BlueFenderThree(drivetrain, intake, pistons, accelerator, flywheel, hood)
+  //   });
 
-    mAutoChooser.addOption("FenderTwoMid", new SequentialCommandGroup[]{
-      new RedFenderTwoMid(drivetrain, intake, pistons, flywheel, hood, accelerator),
-      new BlueFenderTwoMid(drivetrain, intake, pistons, flywheel, hood, accelerator)
-    });
+  //   mAutoChooser.addOption("FenderTwoHanger", new SequentialCommandGroup[]{
+  //     new RedFenderTwoHanger(drivetrain, intake, pistons, flywheel, hood, accelerator),
+  //     new BlueFenderTwoHanger(drivetrain, intake, pistons, flywheel, hood, accelerator)
+  //   });
+
+  //   mAutoChooser.addOption("FenderTwoMid", new SequentialCommandGroup[]{
+  //     new RedFenderTwoMid(drivetrain, intake, pistons, flywheel, hood, accelerator),
+  //     new BlueFenderTwoMid(drivetrain, intake, pistons, flywheel, hood, accelerator)
+  //   });
     
-    mAutoChooser.addOption("FenderTwoWall", new SequentialCommandGroup[]{
-      new RedFenderTwoWall(drivetrain, intake, pistons, flywheel, hood, accelerator),
-      new BlueFenderTwoWall(drivetrain, intake, pistons, flywheel, hood, accelerator)
-    });
+  //   mAutoChooser.addOption("FenderTwoWall", new SequentialCommandGroup[]{
+  //     new RedFenderTwoWall(drivetrain, intake, pistons, flywheel, hood, accelerator),
+  //     new BlueFenderTwoWall(drivetrain, intake, pistons, flywheel, hood, accelerator)
+  //   });
 
-    mAutoChooser.addOption("Taxi", new SequentialCommandGroup[]{
-      new Taxi(drivetrain, intake, pistons, accelerator, flywheel, hood, vision.visionSupplier),
-      new Taxi(drivetrain, intake, pistons, accelerator, flywheel, hood, vision.visionSupplier)
-    });
+  //   mAutoChooser.addOption("Taxi", new SequentialCommandGroup[]{
+  //     new Taxi(drivetrain, intake, pistons, accelerator, flywheel, hood, vision.visionSupplier),
+  //     new Taxi(drivetrain, intake, pistons, accelerator, flywheel, hood, vision.visionSupplier)
+  //   });
 
-    mAutoChooser.addOption("2 Ball Hangar", new SequentialCommandGroup[]{
-      new RedTwoHanger(drivetrain, intake, pistons, flywheel, hood, accelerator, vision.visionSupplier),
-      new RedTwoHanger(drivetrain, intake, pistons, flywheel, hood, accelerator, vision.visionSupplier)
-    });
+  //   mAutoChooser.addOption("2 Ball Hangar", new SequentialCommandGroup[]{
+  //     new RedTwoHanger(drivetrain, intake, pistons, flywheel, hood, accelerator, vision.visionSupplier),
+  //     new RedTwoHanger(drivetrain, intake, pistons, flywheel, hood, accelerator, vision.visionSupplier)
+  //   });
 
-    SmartDashboard.putData("Auto Chooser", mAutoChooser);
+  //   SmartDashboard.putData("Auto Chooser", mAutoChooser);
 
-  }
+  // }
 
   public void updateField(){
     if(intakeExtended.getAsBoolean()){
@@ -404,17 +431,20 @@ public class RobotContainer {
 
 
   public SequentialCommandGroup getAutonomousCommand() {
+    return new SequentialCommandGroup(
+      new BlueTaxiShoot(drivetrain, intake, pistons, flywheel, hood, accelerator));
 
-    int alliance = 0;
-    if(DriverStation.getAlliance() == Alliance.Red){
-      alliance = 0;
-    }else{
-      alliance = 1;
-    }
-    //return new RoutineTesting(drivetrain, intake, pistons, flywheel, hood, accelerator, vision.visionSupplier);
-    return mAutoChooser.getSelected()[alliance];
-    //return new BlueFenderTwoHanger(drivetrain, intake, pistons, flywheel, hood, accelerator);
   }
+  //   int alliance = 0;
+  //   if(DriverStation.getAlliance() == Alliance.Red){
+  //     alliance = 0;
+  //   }else{
+  //     alliance = 1;
+  //   }
+  //   //return new RoutineTesting(drivetrain, intake, pistons, flywheel, hood, accelerator, vision.visionSupplier);
+  //   return mAutoChooser.getSelected()[alliance];
+  //   //return new BlueFenderTwoHanger(drivetrain, intake, pistons, flywheel, hood, accelerator);
+  // }
 
   public static Field2d getField(){ 
     return mField;

@@ -4,13 +4,10 @@ import java.util.List;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants;
 import frc.robot.autonomous.Trajectories;
-import frc.robot.autonomous.common.FireOne;
 import frc.robot.autonomous.common.FireTwo;
 import frc.robot.autonomous.common.IntakePath;
 import frc.robot.subsystems.AcceleratorSubsystem;

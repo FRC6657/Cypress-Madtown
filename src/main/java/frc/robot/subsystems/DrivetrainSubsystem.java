@@ -128,12 +128,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
      mFrontLeft.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
      mFrontRight.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
-     mFrontLeft.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 40, 0));
-     mFrontRight.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 40, 0));
-     mBackLeft.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 40, 0));
-     mBackRight.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 40, 0));
+     mFrontLeft.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 30, 0));
+     mFrontRight.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 30, 0));
+     mBackLeft.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 30, 0));
+     mBackRight.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 30, 0));
 
      mFrontLeft.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_1Ms);
+
      mFrontLeft.configVelocityMeasurementWindow(1);
  
      mFrontLeft.setStatusFramePeriod(StatusFrameEnhanced.Status_10_Targets, 227);

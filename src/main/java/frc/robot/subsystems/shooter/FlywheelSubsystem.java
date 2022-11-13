@@ -81,7 +81,7 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
     mMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_14_Turn_PIDF1, 250);
     mMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_9_MotProfBuffer, 250);
 
-    mMaster.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 40, 0));
+    mMaster.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 30, 0));
 
     mSlave.configFactoryDefault();
     mSlave.setNeutralMode(NeutralMode.Coast); 
@@ -123,6 +123,12 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
 
   }
 
+  public void easyShoot(double voltage) {
+
+    mMaster.setVoltage(voltage);
+
+  }
+
   @Config(tabName = "Shooter", name = "Set RPM")  
   public void setTargetRPM(double newTarget){
     
@@ -160,7 +166,7 @@ public class FlywheelSubsystem extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    runFlywheel();
+    //runFlywheel();
   }
 
   @Override

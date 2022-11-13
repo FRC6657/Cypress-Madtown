@@ -79,11 +79,8 @@
           "style": "Box/Image",
           "width": 0.8510000109672546
         },
-        "bottom": 900,
         "height": 8.229599952697754,
-        "image": "C:\\Users\\Andrew Card\\Desktop\\FRC\\Projects\\arborbotics-2022\\FieldImages\\2022-field-dark.png",
-        "left": 74,
-        "right": 1774,
+        "image": "C:\\Users\\aerea\\UPHS Robotics\\arborbotics-2022-offseason-main\\FieldImages\\2022-field.png",
         "robot-path": {
           "arrows": false,
           "color": [
@@ -95,7 +92,6 @@
           "style": "Line",
           "weight": 2.0
         },
-        "top": 50,
         "trajectory": {
           "arrows": false,
           "color": [
